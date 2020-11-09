@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <group>
+        <item
+            android:id="@+id/changeMealName"
+            android:title="Change Meal Name" />
+        <item
+            android:id="@+id/deleteMeal"
+            android:title="Delete Meal" />
+        <item
+            android:id="@+id/saveMeal"
+            android:title="Save Meal" />
+    </group>
+
+</menu>

@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorActivityBackground"
+    android:soundEffectsEnabled="false">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="@color/colorCalorieGreenWithOpacity"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp"
+        app:cardUseCompatPadding="true"
+        app:contentPadding="16dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/mealName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-condensed"
+                android:padding="@dimen/setting_macros_edit_text_padding"
+                android:textColor="@color/colorDialogs"
+                android:textSize="@dimen/meal_name_text_size"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
+            <EditText
+                android:id="@+id/edit_mealName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:fontFamily="sans-serif-condensed"
+                android:hint="@string/meal_name_hint_edit_text"
+                android:importantForAutofill="no"
+                android:inputType="text"
+                android:maxLength="50"
+                android:padding="@dimen/setting_macros_edit_text_padding"
+                android:textColor="@color/colorDialogs"
+                android:textColorHint="@color/colorActivityBackgroundWithOpacity"
+                android:textSize="@dimen/meal_name_text_size"
+                tools:ignore="LabelFor"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
+            <ImageButton
+                android:id="@+id/saveEditMealName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@id/edit_mealName"
+                android:padding="5dp"
+                android:src="@drawable/ic_baseline_check_24"
+                android:tint="@color/checkButtonGreen"
+                />
+            <ImageButton
+                android:id="@+id/cancelEditSaveMealName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@id/saveEditMealName"
+                android:padding="5dp"
+                android:src="@drawable/ic_baseline_cancel_24"
+                android:tint="@color/cherryRed"
+                />
+
+            <LinearLayout
+                android:id="@+id/mealContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/setting_macros_margin_start">
+
+                    <EditText
+                        android:id="@+id/edit_mealProtein"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:fontFamily="sans-serif-condensed"
+                        android:hint="@string/setting_macros_edit_text_number"
+                        android:importantForAutofill="no"
+                        android:inputType="number"
+                        android:maxLength="3"
+                        android:padding="@dimen/setting_macros_edit_text_padding"
+                        android:textColor="@color/colorDialogs"
+                        android:textColorHint="@color/colorActivityBackgroundWithOpacity"
+                        android:textSize="@dimen/setting_macros_edit_text_size"
+                        tools:ignore="LabelFor" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-condensed"
+                        android:padding="@dimen/setting_macros_edit_text_padding"
+                        android:text="@string/proteins"
+                        android:textColor="@color/colorYellowMain"
+                        android:textSize="@dimen/setting_macros_edit_text_size" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/setting_macros_margin_start">
+
+                    <EditText
+                        android:id="@+id/edit_mealCarbs"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:fontFamily="sans-serif-condensed"
+                        android:hint="@string/setting_macros_edit_text_number"
+                        android:importantForAutofill="no"
+                        android:inputType="number"
+                        android:maxLength="3"
+                        android:padding="@dimen/setting_macros_edit_text_padding"
+                        android:textColor="@color/colorDialogs"
+                        android:textColorHint="@color/colorActivityBackgroundWithOpacity"
+                        android:textSize="@dimen/setting_macros_edit_text_size"
+                        tools:ignore="LabelFor" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-condensed"
+                        android:padding="@dimen/setting_macros_edit_text_padding"
+                        android:text="@string/carbohydrates"
+                        android:textColor="@color/colorYellowMain"
+                        android:textSize="@dimen/setting_macros_edit_text_size" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/setting_macros_margin_start">
+
+                    <EditText
+                        android:id="@+id/edit_mealFats"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:fontFamily="sans-serif-condensed"
+                        android:hint="@string/setting_macros_edit_text_number"
+                        android:importantForAutofill="no"
+                        android:inputType="number"
+                        android:maxLength="3"
+                        android:padding="@dimen/setting_macros_edit_text_padding"
+                        android:textColor="@color/colorDialogs"
+                        android:textColorHint="@color/colorActivityBackgroundWithOpacity"
+                        android:textSize="@dimen/setting_macros_edit_text_size"
+                        tools:ignore="LabelFor" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-condensed"
+                        android:padding="@dimen/setting_macros_edit_text_padding"
+                        android:text="@string/fats"
+                        android:textColor="@color/colorYellowMain"
+                        android:textSize="@dimen/setting_macros_edit_text_size" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/moreOptions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:background="@drawable/ic_baseline_more_horiz_24"
+                android:contentDescription="more options"
+                android:padding="10dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <Button
+                android:id="@+id/button_addThisMeal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/add_meal_button_backround"
+                android:fontFamily="sans-serif-condensed"
+                android:padding="10dp"
+                android:text="Add this Meal"
+                android:textColor="@color/colorActivityBackgroundWithOpacity"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/mealContainer" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</FrameLayout>

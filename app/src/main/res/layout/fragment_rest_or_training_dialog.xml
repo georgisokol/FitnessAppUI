@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/rest_or_training_day_dialog_textview_padding"
+        android:textSize="@dimen/rest_or_training_day_dialog_text_size"
+        android:text="@string/rest_or_training_day_dialog_fragment_question"/>
+    <View
+        android:id="@+id/line1"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:background="#cfcfcf" />
+    <TextView
+        android:id="@+id/text_training"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/rest_or_training_day_dialog_text_size"
+        android:padding="@dimen/rest_or_training_day_dialog_textview_padding"
+        android:text="@string/training_day_dialog_fragment"
+        android:textColor="@color/colorCalorieGreen"/>
+    <View
+        android:id="@+id/line2"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:background="#cfcfcf" />
+    <TextView
+        android:id="@+id/text_rest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/rest_or_training_day_dialog_text_size"
+        android:padding="@dimen/rest_or_training_day_dialog_textview_padding"
+        android:textColor="@color/colorCalorieGreen"
+        android:text="@string/rest_day_dialog_fragment"/>
+
+
+</LinearLayout>

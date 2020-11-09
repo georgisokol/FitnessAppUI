@@ -1,0 +1,91 @@
+<resources>
+    <string name="app_name">FitnessApp</string>
+
+    <string name="protein_short">P</string>
+    <string name="carbs_short">C</string>
+    <string name="fats_short">F</string>
+
+
+    <string name="rest_day_dialog_fragment">It\'s a Rest Day</string>
+    <string name="training_day_dialog_fragment">It\'s a Training Day</string>
+    <string name="rest_or_training_day_dialog_fragment_question">What\'s Today?</string>
+    <string name="calculate_my_macros_dialog_fragment">Calculate my macro targets</string>
+    <string name="set_my_own_macros_dialog_fragment">Set my own macro targets</string>
+    <string name="close_dialog_fragment">Close</string>
+    <string name="enter_or_calculate_dialog_fragment_question">What would you like to do?</string>
+    <string name="training_day_number_prefix">1</string>
+    <string name="rest_day_number_prefix">2</string>
+    <string name="proteins">proteins</string>
+    <string name="carbohydrates">carbs</string>
+    <string name="fats">fats</string>
+    <string name="training_day_title">Training Day</string>
+    <string name="rest_day_title">Rest Day</string>
+    <string name="setting_macros_edit_text_number">0</string>
+    <string name="done">Done</string>
+    <string name="set_my_own_macros_fragment_title">Custom Macros</string>
+
+    <string name="set_my_own_macros_activity_toolbar_title">Custom Macros</string>
+    <string name="tell_us_about_yourself">Tell us about yourself</string>
+
+    <string name="calculate_macros_activity_toolbar_title">Physical Stats</string>
+
+    <string name="my_age_is_text">My age is</string>
+    <string name="i_am_text">I am</string>
+    <string name="i_weigh_text">I weigh</string>
+    <string name="i_exercise_text">I exercise</string>
+    <string name="for_exercise_text">For exercise</string>
+    <string name="i_want_to_text">I want to</string>
+    <string name="centimeters_text">cm</string>
+    <string name="kilograms_text">kg</string>
+
+    //Physical stats default values
+    <string name="edit_text_age_default_value">25</string>
+    <string name="edit_text_gender_default_value">Male</string>
+    <string name="edit_text_height_default_value">180</string>
+    <string name="edit_text_weight_default_value">80</string>
+    <string name="edit_text_how_often_default_value">rarely</string>
+    <string name="edit_text_for_exercise_default_value">I walk sometimes</string>
+    <string name="edit_text_i_want_to_default_value">lose some fat</string>
+
+    <string name="let_go_text">Let\'s go!</string>
+    <string name="next_your_macro_results_text">Next: Your macro results</string>
+
+    // exercise frequency options
+    <string name="exercise_frequency_rarely">rarely</string>
+    <string name="exercise_frequency_1_3">1–3 days a week</string>
+    <string name="exercise_frequency_3_5">3–5 days a week</string>
+    <string name="exercise_frequency_6_7">6–7 days a week</string>
+
+    //gender options
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+
+    //exercise type options
+    <string name="walk_sometimes">I walk sometimes</string>
+    <string name="i_do_cardio">I do cardio</string>
+    <string name="i_lift_weights">I lift weights</string>
+
+    //exercise goal options
+    <string name="lose_some_fat">lose some fat</string>
+    <string name="build_some_muscle">build some muscle</string>
+    <string name="stay_the_same">stay the same</string>
+
+
+    //entering macro meals
+    <string name="today">Today</string>
+    <string name="meal_name_hint_edit_text">Your meal name</string>
+
+    //Favorite Meals Activity
+    <string name="favorite_meals_toolbar_title">Saved Meals</string>
+
+    // Meals History Activity
+    <string name="meals_history_toolbar_title">History</string>
+
+    <string name="meal_history_table_date_default">Date</string>
+    <string name="meal_history_table_calories_default">Calories</string>
+    <string name="meal_history_table_protein_default">Protein</string>
+    <string name="meal_history_table_carbs_default">Carbs</string>
+    <string name="meal_history_table_fats_default">Fats</string>
+
+
+</resources>

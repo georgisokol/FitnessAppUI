@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorActivityBackground"
+    tools:context=".activities.CalculateMacrosActivity">
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:contentInsetStart="0dp"
+        android:navigationIcon="@drawable/ic_baseline_cancel_24"
+        app:layout_scrollFlags="snap"
+        android:background="@color/colorDialogs"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-condensed"
+            android:text="@string/calculate_macros_activity_toolbar_title"
+            android:textSize="@dimen/calculate_or_enter_macros_activity_toolbar_title_size"
+            android:layout_marginEnd="?android:attr/actionBarSize"
+            android:gravity="center"/>
+    </androidx.appcompat.widget.Toolbar>
+    <TextView
+        android:id="@+id/text_tell_us_about_yourself"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:gravity="center"
+        android:textSize="@dimen/tell_us_about_yourself_text_size"
+        android:background="@color/colorDialogs"
+        android:padding="@dimen/tell_us_about_yourself_padding"
+        android:fontFamily="sans-serif-condensed"
+        android:text="@string/tell_us_about_yourself"/>
+    <LinearLayout
+        android:id="@+id/physicalStatsContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/physical_stats_container_padding"
+        app:layout_constraintTop_toBottomOf="@+id/text_tell_us_about_yourself">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-condensed"
+                android:textColor="@color/colorDialogs"
+                android:padding="@dimen/physical_stats_padding"
+                android:textSize="@dimen/physical_stats_text_size"
+                android:text="@string/my_age_is_text"/>
+            <EditText
+                android:id="@+id/edit_age"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorYellowMain"
+                android:padding="@dimen/physical_stats_padding"
+                android:textSize="@dimen/physical_stats_text_size"
+                android:fontFamily="sans-serif-condensed"
+                android:text="@string/edit_text_age_default_value"
+                android:maxLength="2"
+                android:background="@null"
+                android:autofillHints=""
+                android:inputType="number"
+                tools:ignore="LabelFor" />
+
+        </LinearLayout>
+        <View
+            android:id="@+id/line1"
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"
+            android:background="#cfcfcf" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-condensed"
+                android:textColor="@color/colorDialogs"
+                android:padding="@dimen/physical_stats_padding"
+                android:textSize="@dimen/physical_stats_text_size"
+                android:text="@string/i_am_text"/>
+            <TextView
+                android:id="@+id/text_gender"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorYellowMain"
+                android:padding="@dimen/physical_stats_padding"
+                android:textSize="@dimen/physical_stats_text_size"
+                android:fontFamily="sans-serif-condensed"
+                android:text="@string/edit_text_gender_default_value"
+
+                />
+
+        </LinearLayout>
+        <View
+            android:id="@+id/line2"
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"
+            android:background="#cfcfcf" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-condensed"
+                android:textColor="@color/colorDialogs"
+                android:padding="@dimen/physical_stats_padding"
+                android:textSize="@dimen/physical_stats_text_size"
+                android:text="@string/i_am_text"/>
+            <EditText
+                android:id="@+id/edit_Height"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorYellowMain"
+                android:padding="@dimen/physical_stats_padding"
+                android:textSize="@dimen/physical_stats_text_size"
+                android:fontFamily="sans-serif-condensed"
+                android:inputType="number"
+                android:text="@string/edit_text_height_default_value"
+                android:background="@null"
+                android:importantForAutofill="no"
+                tools:ignore="LabelFor" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-condensed"
+                android:textColor="@color/colorDialogs"
+                android:padding="@dimen/physical_stats_padding"
+                android:textSize="@dimen/physical_stats_text_size"
+                android:text="@string/centimeters_text"/>
+
+        </LinearLayout>
+        <View
+            android:id="@+id/line3"
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"
+            android:background="#cfcfcf" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-condensed"
+                android:textColor="@color/colorDialogs"
+                android:padding="@dimen/physical_stats_padding"
+                android:textSize="@dimen/physical_stats_text_size"
+                android:text="@string/i_weigh_text"/>
+            <EditText
+                android:id="@+id/edit_Weight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorYellowMain"
+                android:padding="@dimen/physical_stats_padding"
+                android:textSize="@dimen/physical_stats_text_size"
+                android:maxLength="3"
+                android:fontFamily="sans-serif-condensed"
+                android:text="@string/edit_text_weight_default_value"
+                android:inputType="number"
+                android:background="@null"
+                android:importantForAutofill="no"
+                tools:ignore="LabelFor" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-condensed"
+                android:textColor="@color/colorDialogs"
+                android:padding="@dimen/physical_stats_padding"
+                android:textSize="@dimen/physical_stats_text_size"
+                android:text="@string/kilograms_text"/>
+
+        </LinearLayout>
+        <View
+            android:id="@+id/line4"
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"
+            android:background="#cfcfcf" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-condensed"
+                android:textColor="@color/colorDialogs"
+                android:padding="@dimen/physical_stats_padding"
+                android:textSize="@dimen/physical_stats_text_size"
+                android:text="@string/i_exercise_text"/>
+            <TextView
+                android:id="@+id/text_iExercise"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorYellowMain"
+                android:padding="@dimen/physical_stats_padding"
+                android:textSize="@dimen/physical_stats_text_size"
+                android:fontFamily="sans-serif-condensed"
+                android:text="@string/edit_text_how_often_default_value"
+                android:background="@null"
+                />
+
+        </LinearLayout>
+        <View
+            android:id="@+id/line5"
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"
+            android:background="#cfcfcf" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-condensed"
+                android:textColor="@color/colorDialogs"
+                android:padding="@dimen/physical_stats_padding"
+                android:textSize="@dimen/physical_stats_text_size"
+                android:text="@string/for_exercise_text"/>
+            <TextView
+                android:id="@+id/text_forExercise"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorYellowMain"
+                android:padding="@dimen/physical_stats_padding"
+                android:textSize="@dimen/physical_stats_text_size"
+                android:fontFamily="sans-serif-condensed"
+                android:text="@string/walk_sometimes"
+                android:background="@null"
+                />
+
+        </LinearLayout>
+        <View
+            android:id="@+id/line6"
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"
+            android:background="#cfcfcf" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-condensed"
+                android:textColor="@color/colorDialogs"
+                android:padding="@dimen/physical_stats_padding"
+                android:textSize="@dimen/physical_stats_text_size"
+                android:text="@string/i_want_to_text"/>
+            <TextView
+                android:id="@+id/text_iWantTo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorYellowMain"
+                android:padding="@dimen/physical_stats_padding"
+                android:textSize="@dimen/physical_stats_text_size"
+                android:fontFamily="sans-serif-condensed"
+                android:text="@string/edit_text_i_want_to_default_value"
+                android:background="@null"
+                />
+
+        </LinearLayout>
+        <View
+            android:id="@+id/line7"
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"
+            android:background="#cfcfcf" />
+
+
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:clickable="true"
+        android:background="@color/colorCalorieGreenWithOpacity"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:id="@+id/letsGoContainer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/physicalStatsContainer">
+
+        <TextView
+            android:id="@+id/text_letsGo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/let_go_text"
+            app:layout_constraintTop_toTopOf="parent"
+            android:textSize="@dimen/lets_go_text_size"
+            android:fontFamily="sans-serif-condensed"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/next_your_macro_results_text"
+            app:layout_constraintTop_toBottomOf="@id/text_letsGo"
+            android:textSize="@dimen/next_text_padding"
+            android:fontFamily="sans-serif-condensed"
+            android:textColor="@color/white"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_baseline_navigate_next_24"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

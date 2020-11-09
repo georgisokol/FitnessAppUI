@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:background="@color/colorDialogs"
+    android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/text_loseFat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:padding="@dimen/rest_or_training_day_dialog_textview_padding"
+        android:text="@string/lose_some_fat"
+        android:textColor="@color/colorCalorieGreen"
+        android:textSize="@dimen/exercise_frequency_options_text_size" />
+
+    <View
+        android:id="@+id/line1"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:background="@color/white" />
+
+    <TextView
+        android:id="@+id/text_buildMuscle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:padding="@dimen/rest_or_training_day_dialog_textview_padding"
+        android:text="@string/build_some_muscle"
+        android:textColor="@color/colorCalorieGreen"
+        android:textSize="@dimen/exercise_frequency_options_text_size" />
+
+    <View
+        android:id="@+id/line2"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:background="@color/white" />
+    <TextView
+        android:id="@+id/text_staySame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:padding="@dimen/rest_or_training_day_dialog_textview_padding"
+        android:text="@string/stay_the_same"
+        android:textColor="@color/colorCalorieGreen"
+        android:textSize="@dimen/exercise_frequency_options_text_size" />
+    <View
+        android:id="@+id/line4"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:background="@color/white" />
+    <TextView
+        android:id="@+id/text_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:padding="@dimen/rest_or_training_day_dialog_textview_padding"
+        android:text="@string/close_dialog_fragment"
+        android:textColor="@color/colorCalorieGreen"
+        android:textSize="@dimen/exercise_frequency_options_text_size" />
+    <View
+        android:id="@+id/line5"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:background="@color/white" />
+
+</LinearLayout>

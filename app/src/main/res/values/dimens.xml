@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="rest_or_training_day_dialog_height">150dp</dimen>
+    <dimen name="rest_or_training_day_dialog_width">300dp</dimen>
+    <dimen name="rest_or_training_day_dialog_textview_padding">10dp</dimen>
+    <dimen name="rest_or_training_day_dialog_text_size">18sp</dimen>
+    <dimen name="calculate_or_enter_macros_dialog_height">180dp</dimen>
+    <dimen name="calculate_or_enter_macros_dialog_width">300dp</dimen>
+    <dimen name="setting_macros_edit_text_padding">5dp</dimen>
+    <dimen name="setting_macros_title_padding">10dp</dimen>
+    <dimen name="setting_macros_title_text_size">25sp</dimen>
+    <dimen name="setting_macros_edit_text_size">20sp</dimen>
+    <dimen name="setting_macros_margin_start">40dp</dimen>
+    <dimen name="min_circle_height_and_width">100dp</dimen>
+
+    <dimen name="calculate_or_enter_macros_activity_toolbar_title_size">30sp</dimen>
+    <dimen name="tell_us_about_yourself_padding">30dp</dimen>
+    <dimen name="tell_us_about_yourself_text_size">20sp</dimen>
+    <dimen name="physical_stats_container_padding">30dp</dimen>
+    <dimen name="physical_stats_padding">5dp</dimen>
+    <dimen name="physical_stats_text_size">22sp</dimen>
+
+    <dimen name="next_text_padding">15sp</dimen>
+    <dimen name="lets_go_text_size">30sp</dimen>
+
+    <dimen name="exercise_frequency_options_text_size">22sp</dimen>
+
+    <dimen name="meal_name_text_size">25sp</dimen>
+
+    // Favorite Meals Activity
+    <dimen name="saved_meal_macros_text_size">15sp</dimen>
+    <dimen name="saved_meal_title_text_size">20sp</dimen>
+    <dimen name="saved_meal_textviews_padding">5dp</dimen>
+
+
+    // HIstory Meals ACtivity
+    <dimen name="table_item_macros_size">17sp</dimen>
+
+    <dimen name="table_row_padding">7dp</dimen>
+
+</resources>
