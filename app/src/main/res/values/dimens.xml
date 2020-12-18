@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="rest_or_training_day_dialog_height">150dp</dimen>
+    <dimen name="rest_suggestion_day_dialog_height">200dp</dimen>
     <dimen name="rest_or_training_day_dialog_width">300dp</dimen>
     <dimen name="rest_or_training_day_dialog_textview_padding">10dp</dimen>
     <dimen name="rest_or_training_day_dialog_text_size">18sp</dimen>
@@ -37,5 +38,12 @@
     <dimen name="table_item_macros_size">17sp</dimen>
 
     <dimen name="table_row_padding">7dp</dimen>
+
+
+    // REGISTER AND LOGIN ACTIVITIES
+
+    <dimen name="title_text_size">30sp</dimen>
+    <dimen name="button_text_size">20sp</dimen>
+    <dimen name="inputs_margin">15dp</dimen>
 
 </resources>

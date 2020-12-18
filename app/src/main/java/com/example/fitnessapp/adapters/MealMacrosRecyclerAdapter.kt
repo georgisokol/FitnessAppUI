@@ -109,7 +109,7 @@ class MealMacrosRecyclerAdapter(
                     mealProtein.text.toString(),
                     mealCarbs.text.toString(),
                     mealFats.text.toString(),
-                    mealMacrosList[adapterPosition].Uid, mealProtein,mealCarbs, mealFats
+                    mealMacrosList[adapterPosition].Uid, mealProtein,mealCarbs, mealFats, adapterPosition
                 )
             }
         }

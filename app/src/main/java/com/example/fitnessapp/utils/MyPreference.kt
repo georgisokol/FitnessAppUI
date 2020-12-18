@@ -25,6 +25,49 @@ class MyPreference(context: Context) {
 
     }
 
+    fun getUserUid() :String? {
+        return preference.getString(PREFERENCE_USER_UID, null)
+    }
+
+    fun setUserUid(userUid :String?) {
+        val editor = preference.edit()
+        editor.putString(PREFERENCE_USER_UID, userUid)
+        editor.apply()
+    }
+
+    fun getDailyMacroTargetsUid() :String? {
+        return preference.getString(PREFERENCE_DAILY_MACRO_TARGETS_UID, null)
+    }
+
+    fun setDailyMacroTargetsUid(uId :String?) {
+        val editor = preference.edit()
+        editor.putString(PREFERENCE_DAILY_MACRO_TARGETS_UID, uId)
+        editor.apply()
+    }
+
+    fun getRestDaySuggestion() :Boolean {
+        return preference.getBoolean(PREFERENCE_REST_DAY_SUGGESTION,false)
+    }
+    fun setRestDaySuggestion(flag: Boolean) {
+        val editor = preference.edit()
+        editor.putBoolean(PREFERENCE_REST_DAY_SUGGESTION, flag)
+        editor.apply()
+    }
+
+    fun getRestDaySuggestionAlreadyPopped() :Boolean {
+        return preference.getBoolean(PREFERENCE_REST_DAY_SUGGESTION_POPPED, false)
+    }
+
+    fun setRestDaySuggestionAlreadyPopped(flag :Boolean) {
+        val editor = preference.edit()
+        editor.putBoolean(PREFERENCE_REST_DAY_SUGGESTION_POPPED, flag)
+        editor.apply()
+    }
+
+    fun clearMyPreference () {
+        preference.edit().clear().apply()
+    }
+
 
 
 }

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -21,9 +22,13 @@ import com.example.fitnessapp.adapters.MealMacrosRecyclerAdapter
 import com.example.fitnessapp.dataclasses.MealMacrosDataForGet
 import com.example.fitnessapp.dataclasses.MealMacrosForPost
 import com.example.fitnessapp.dataclasses.SavedMealsForCreation
+import com.example.fitnessapp.fragments.ServerOrConnectivityErrorDialog
 import com.example.fitnessapp.interfaces.NameDeleteSaveClickListener
+import com.example.fitnessapp.interfaces.ServerAndConnectivityInterface
+import com.example.fitnessapp.network.NoConnectivityException
 import com.example.fitnessapp.services.DailyMacroTargetsService
 import com.example.fitnessapp.services.ServiceBuilder
+import com.example.fitnessapp.utils.MyPreference
 import com.example.fitnessapp.utils.hideKeyboardFrom
 import com.example.fitnessapp.viewmodels.MacrosViewModel
 import com.google.android.material.snackbar.Snackbar
@@ -32,12 +37,14 @@ import kotlinx.android.synthetic.main.macro_meals_list_item_layout.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.net.SocketTimeoutException
 
 
-class DailyMacrosIntakeActivity : AppCompatActivity(), NameDeleteSaveClickListener {
-    private var mealMacrosArray: MutableList<MealMacrosDataForGet> = mutableListOf()
+class DailyMacrosIntakeActivity : AppCompatActivity(), NameDeleteSaveClickListener, ServerAndConnectivityInterface {
+    lateinit var myPreference: MyPreference
     var mealMacrosArrayFromAPI: MutableList<MealMacrosDataForGet> = mutableListOf()
     private lateinit var macrosAdapter: MealMacrosRecyclerAdapter
+    lateinit var serverAndConnectivityInterface: ServerAndConnectivityInterface
     private val macrosViewModel: MacrosViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,18 +54,21 @@ class DailyMacrosIntakeActivity : AppCompatActivity(), NameDeleteSaveClickListen
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setDisplayShowTitleEnabled(false)
+        myPreference = MyPreference(this)
+
+        serverAndConnectivityInterface = this
 
         val emptyMeal = MealMacrosDataForGet(null, "", 0, 0, 0)
 
 
-        macrosViewModel.getMealMacros()
+        macrosViewModel.getMealMacros(myPreference.getUserUid()!!)
         macrosViewModel.mealMacrosListLive.observe(this@DailyMacrosIntakeActivity, Observer {
             mealMacrosArrayFromAPI = it
             if (mealMacrosArrayFromAPI.size == 0) {
-                mealMacrosArray.add(emptyMeal)
+                mealMacrosArrayFromAPI.add(emptyMeal)
                 macrosAdapter = MealMacrosRecyclerAdapter(
                     this@DailyMacrosIntakeActivity,
-                    mealMacrosArray,
+                    mealMacrosArrayFromAPI,
                     this@DailyMacrosIntakeActivity
                 )
                 mealsList.adapter = macrosAdapter
@@ -77,12 +87,16 @@ class DailyMacrosIntakeActivity : AppCompatActivity(), NameDeleteSaveClickListen
         mealsList.layoutManager = LinearLayoutManager(this)
 
         mealsList.adapter =
-            MealMacrosRecyclerAdapter(this, mealMacrosArray, this as NameDeleteSaveClickListener)
+            MealMacrosRecyclerAdapter(this, mealMacrosArrayFromAPI, this as NameDeleteSaveClickListener)
 
         addMeal.setOnClickListener {
-
             mealMacrosArrayFromAPI.add(emptyMeal)
             (mealsList.adapter as MealMacrosRecyclerAdapter).notifyDataSetChanged()
+        }
+
+        addMealFromCamera.setOnClickListener {
+            val activtyIntent = Intent(this, ImageToMacrosActivity::class.java)
+            startActivity(activtyIntent)
         }
 
 
@@ -113,6 +127,7 @@ class DailyMacrosIntakeActivity : AppCompatActivity(), NameDeleteSaveClickListen
                 name.text = input.text.toString()
                 name.visibility = View.VISIBLE
                 saveButton.visibility = View.GONE
+                cancelButton.visibility = View.GONE
                 input.visibility = View.GONE
                 hideKeyboardFrom(this, input)
             }
@@ -130,53 +145,53 @@ class DailyMacrosIntakeActivity : AppCompatActivity(), NameDeleteSaveClickListen
 
     override fun deleteMeal(uId: String?, position: Int) {
         if (uId == null) {
-            mealMacrosArray.removeAt(position)
+            mealMacrosArrayFromAPI.removeAt(position)
             (mealsList.adapter as MealMacrosRecyclerAdapter).notifyDataSetChanged()
         } else {
             val dailyMacroTargetsService =
                 ServiceBuilder.buildService(DailyMacroTargetsService::class.java)
-            val deleteMealMacrosRequestCall = dailyMacroTargetsService.deleteMealMacros(uId)
-            deleteMealMacrosRequestCall.enqueue(object : Callback<Unit> {
-                override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
-                    if (response.isSuccessful) {
-                        Snackbar.make(
-                            button_addThisMeal,
-                            "Sucessfully Deleted",
-                            Snackbar.LENGTH_SHORT
-                        ).show()
-                        macrosViewModel.getMealMacros()
-                        macrosViewModel.mealMacrosListLive.observe(
-                            this@DailyMacrosIntakeActivity,
-                            Observer {
-                                mealMacrosArrayFromAPI = it
-                                macrosAdapter = MealMacrosRecyclerAdapter(
-                                    this@DailyMacrosIntakeActivity,
-                                    mealMacrosArrayFromAPI,
-                                    this@DailyMacrosIntakeActivity
-                                )
-                                mealsList.adapter = macrosAdapter
+            try{
+                val deleteMealMacrosRequestCall =
+                    dailyMacroTargetsService.deleteMealMacros(myPreference.getUserUid()!!, uId)
+                deleteMealMacrosRequestCall.enqueue(object : Callback<Unit> {
+                    override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
+                        if (response.isSuccessful) {
+                            Snackbar.make(
+                                button_addThisMeal,
+                                "Sucessfully Deleted",
+                                Snackbar.LENGTH_SHORT
+                            ).show()
+
+                            mealMacrosArrayFromAPI.removeAt(position)
+                            (mealsList.adapter as MealMacrosRecyclerAdapter).notifyDataSetChanged()
 
 
-                            })
+                        } else {
+                            Toast.makeText(
+                                this@DailyMacrosIntakeActivity,
+                                " Unsuccessfully deleted meal",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
 
-                    } else {
+                    override fun onFailure(call: Call<Unit>, t: Throwable) {
                         Toast.makeText(
                             this@DailyMacrosIntakeActivity,
                             " Unsuccessfully deleted meal",
                             Toast.LENGTH_SHORT
                         ).show()
                     }
-                }
 
-                override fun onFailure(call: Call<Unit>, t: Throwable) {
-                    Toast.makeText(
-                        this@DailyMacrosIntakeActivity,
-                        " Unsuccessfully deleted meal",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+                })
+            } catch (e: NoConnectivityException) {
+                Log.e("Connectivity", e.message)
+                serverAndConnectivityInterface.onConnectivityError()
+            } catch( e: SocketTimeoutException) {
+                Log.e("Server status", "SERVER IS DOWN")
+                serverAndConnectivityInterface.onServerError()
+            }
 
-            })
         }
     }
 
@@ -213,40 +228,50 @@ class DailyMacrosIntakeActivity : AppCompatActivity(), NameDeleteSaveClickListen
                 fats.text.toString().toInt(),
                 mealName.text.toString()
             )
-            val addMealToSavedMealsRequestCall = dailyMacroTargetsService.addMealToSavedMeals(
-                mealForSave
-            )
+            try {
 
-            addMealToSavedMealsRequestCall.enqueue(object : Callback<SavedMealsForCreation> {
-                override fun onResponse(
-                    call: Call<SavedMealsForCreation>,
-                    response: Response<SavedMealsForCreation>
-                ) {
-                    if (response.isSuccessful) {
-                        Snackbar.make(
-                            addMeal,
-                            "Successfully Added the Meal to Saved Meals",
-                            Snackbar.LENGTH_SHORT
-                        ).show()
+                val addMealToSavedMealsRequestCall = dailyMacroTargetsService.addMealToSavedMeals(
+                    myPreference.getUserUid()!!,
+                    mealForSave
+                )
 
-                    } else {
+                addMealToSavedMealsRequestCall.enqueue(object : Callback<SavedMealsForCreation> {
+                    override fun onResponse(
+                        call: Call<SavedMealsForCreation>,
+                        response: Response<SavedMealsForCreation>
+                    ) {
+                        if (response.isSuccessful) {
+                            Snackbar.make(
+                                addMeal,
+                                "Successfully Added the Meal to Saved Meals",
+                                Snackbar.LENGTH_SHORT
+                            ).show()
+
+                        } else {
+                            Toast.makeText(
+                                this@DailyMacrosIntakeActivity,
+                                " Unsuccessfully added meal",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+
+                    override fun onFailure(call: Call<SavedMealsForCreation>, t: Throwable) {
                         Toast.makeText(
                             this@DailyMacrosIntakeActivity,
                             " Unsuccessfully added meal",
                             Toast.LENGTH_SHORT
                         ).show()
                     }
-                }
 
-                override fun onFailure(call: Call<SavedMealsForCreation>, t: Throwable) {
-                    Toast.makeText(
-                        this@DailyMacrosIntakeActivity,
-                        " Unsuccessfully added meal",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-
-            })
+                })
+            } catch (e: NoConnectivityException) {
+                Log.e("Connectivity", e.message)
+                serverAndConnectivityInterface.onConnectivityError()
+            } catch( e: SocketTimeoutException) {
+                Log.e("Server status", "SERVER IS DOWN")
+                serverAndConnectivityInterface.onServerError()
+            }
         }
 
 
@@ -257,7 +282,7 @@ class DailyMacrosIntakeActivity : AppCompatActivity(), NameDeleteSaveClickListen
         proteins: String,
         carbs: String,
         fats: String,
-        uId: String?, mealProteinInput: EditText, mealCarbsInput: EditText, mealFatsInput: EditText
+        uId: String?, mealProteinInput: EditText, mealCarbsInput: EditText, mealFatsInput: EditText, position: Int
     ) {
         var canPostOrUpdateFlag = false
         val mealMacrosForPostObject: MealMacrosForPost
@@ -288,33 +313,36 @@ class DailyMacrosIntakeActivity : AppCompatActivity(), NameDeleteSaveClickListen
             if (uId == null) {
                 // POST CALL
 
-                val addMealMacroRequestCall =
-                    dailyMacroTargetsService.addMealMacros(mealMacrosForPostObject)
+                try {
+                    val addMealMacroRequestCall =
+                        dailyMacroTargetsService.addMealMacros(
+                            myPreference.getUserUid()!!,
+                            mealMacrosForPostObject
+                        )
 
-                addMealMacroRequestCall.enqueue(object : Callback<MealMacrosForPost> {
-                    override fun onResponse(
-                        call: Call<MealMacrosForPost>,
-                        response: Response<MealMacrosForPost>
-                    ) {
-                        if (response.isSuccessful) {
-                            Snackbar.make(addMeal, "Succefully Added a Meal", Snackbar.LENGTH_SHORT)
-                                .show()
-                            macrosViewModel.getMealMacros()
-                            macrosViewModel.mealMacrosListLive.observe(
-                                this@DailyMacrosIntakeActivity,
-                                Observer {
-                                    mealMacrosArrayFromAPI = it
-                                    macrosAdapter = MealMacrosRecyclerAdapter(
-                                        this@DailyMacrosIntakeActivity,
-                                        mealMacrosArrayFromAPI,
-                                        this@DailyMacrosIntakeActivity
-                                    )
-                                    mealsList.adapter = macrosAdapter
+                    addMealMacroRequestCall.enqueue(object : Callback<MealMacrosDataForGet> {
+                        override fun onResponse(
+                            call: Call<MealMacrosDataForGet>,
+                            response: Response<MealMacrosDataForGet>
+                        ) {
+                            if (response.isSuccessful) {
+                                Snackbar.make(addMeal, "Succefully Added a Meal", Snackbar.LENGTH_SHORT)
+                                    .show()
+                                mealMacrosArrayFromAPI[position] = response.body()!!
+                                (mealsList.adapter as MealMacrosRecyclerAdapter).notifyDataSetChanged()
 
 
-                                })
+                            } else {
+                                Toast.makeText(
+                                    this@DailyMacrosIntakeActivity,
+                                    " Unsuccessfully added meal",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
 
-                        } else {
+                        }
+
+                        override fun onFailure(call: Call<MealMacrosDataForGet>, t: Throwable) {
                             Toast.makeText(
                                 this@DailyMacrosIntakeActivity,
                                 " Unsuccessfully added meal",
@@ -322,67 +350,64 @@ class DailyMacrosIntakeActivity : AppCompatActivity(), NameDeleteSaveClickListen
                             ).show()
                         }
 
-                    }
+                    })
+                }catch (e: NoConnectivityException) {
+                    Log.e("Connectivity", e.message)
+                    serverAndConnectivityInterface.onConnectivityError()
+                } catch( e: SocketTimeoutException) {
+                    Log.e("Server status", "SERVER IS DOWN")
+                    serverAndConnectivityInterface.onServerError()
+                }
 
-                    override fun onFailure(call: Call<MealMacrosForPost>, t: Throwable) {
-                        Toast.makeText(
-                            this@DailyMacrosIntakeActivity,
-                            " Unsuccessfully added meal",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
 
-                })
             } else {
                 //PUT CALL
+                try {
+                    val updateMealMacroRequestCall = dailyMacroTargetsService.updateMealMacros(
+                        myPreference.getUserUid()!!,
+                        uId,
+                        mealMacrosForPostObject
+                    )
+                    updateMealMacroRequestCall.enqueue(object : Callback<MealMacrosDataForGet> {
+                        override fun onResponse(
+                            call: Call<MealMacrosDataForGet>,
+                            response: Response<MealMacrosDataForGet>
+                        ) {
+                            if (response.isSuccessful) {
+                                Snackbar.make(
+                                    addMeal,
+                                    "Succefully Updated a Meal",
+                                    Snackbar.LENGTH_SHORT
+                                ).show()
 
-                val updateMealMacroRequestCall = dailyMacroTargetsService.updateMealMacros(
-                    uId,
-                    mealMacrosForPostObject
-                )
-                updateMealMacroRequestCall.enqueue(object : Callback<MealMacrosForPost> {
-                    override fun onResponse(
-                        call: Call<MealMacrosForPost>,
-                        response: Response<MealMacrosForPost>
-                    ) {
-                        if (response.isSuccessful) {
-                            Snackbar.make(
-                                addMeal,
-                                "Succefully Updated a Meal",
-                                Snackbar.LENGTH_SHORT
-                            ).show()
-                            macrosViewModel.getMealMacros()
-                            macrosViewModel.mealMacrosListLive.observe(
-                                this@DailyMacrosIntakeActivity,
-                                Observer {
-                                    mealMacrosArrayFromAPI = it
-                                    macrosAdapter = MealMacrosRecyclerAdapter(
-                                        this@DailyMacrosIntakeActivity,
-                                        mealMacrosArrayFromAPI,
-                                        this@DailyMacrosIntakeActivity
-                                    )
-                                    mealsList.adapter = macrosAdapter
+                                mealMacrosArrayFromAPI[position] = response.body()!!
+                                (mealsList.adapter as MealMacrosRecyclerAdapter).notifyDataSetChanged()
 
+                            } else {
+                                Toast.makeText(
+                                    this@DailyMacrosIntakeActivity,
+                                    " Unsuccessfully updated meal",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
 
-                                })
-
-                        } else {
+                        override fun onFailure(call: Call<MealMacrosDataForGet>, t: Throwable) {
                             Toast.makeText(
                                 this@DailyMacrosIntakeActivity,
                                 " Unsuccessfully updated meal",
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
-                    }
+                    })
+                } catch (e: NoConnectivityException) {
+                    Log.e("Connectivity", e.message)
+                    serverAndConnectivityInterface.onConnectivityError()
+                } catch( e: SocketTimeoutException) {
+                    Log.e("Server status", "SERVER IS DOWN")
+                    serverAndConnectivityInterface.onServerError()
+                }
 
-                    override fun onFailure(call: Call<MealMacrosForPost>, t: Throwable) {
-                        Toast.makeText(
-                            this@DailyMacrosIntakeActivity,
-                            " Unsuccessfully updated meal",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                })
 
 
             }
@@ -422,5 +447,31 @@ class DailyMacrosIntakeActivity : AppCompatActivity(), NameDeleteSaveClickListen
             }
         }
         return true
+    }
+
+    override fun onServerError() {
+        val errorMessage = "Could not connect to server"
+        val serverOrConnectivityErrorDialog = ServerOrConnectivityErrorDialog().newInstance(errorMessage)
+
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
+        val previous = supportFragmentManager.findFragmentByTag("connectionErrorDialog")
+        if (previous != null) {
+            fragmentTransaction.remove(previous)
+        }
+        fragmentTransaction.addToBackStack(null)
+        serverOrConnectivityErrorDialog.show(fragmentTransaction, "connectionErrorDialog")
+    }
+
+    override fun onConnectivityError() {
+        val errorMessage = "Check your internet connection"
+        val serverOrConnectivityErrorDialog = ServerOrConnectivityErrorDialog().newInstance(errorMessage)
+
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
+        val previous = supportFragmentManager.findFragmentByTag("connectionErrorDialog")
+        if (previous != null) {
+            fragmentTransaction.remove(previous)
+        }
+        fragmentTransaction.addToBackStack(null)
+        serverOrConnectivityErrorDialog.show(fragmentTransaction, "connectionErrorDialog")
     }
 }

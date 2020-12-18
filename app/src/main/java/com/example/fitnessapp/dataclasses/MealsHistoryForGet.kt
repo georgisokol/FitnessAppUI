@@ -6,5 +6,6 @@ data class MealsHistoryForGet (
     @SerializedName("createdOn") var creationDate : String,
     @SerializedName("protein") var protein: Int,
     @SerializedName("carbs") var carbs :Int ,
-    @SerializedName("fats") var fats :Int
+    @SerializedName("fats") var fats :Int,
+    @SerializedName("isTrainingDay") var isTrainingDay :Boolean
 )

@@ -32,6 +32,7 @@ class OnClearFromRecentService : Service() {
         Log.e("ClearFromRecentService", "END")
 
         myPreference.setTrainingOrRestDay(null)
+        myPreference.setRestDaySuggestionAlreadyPopped(false)
 
 
     }

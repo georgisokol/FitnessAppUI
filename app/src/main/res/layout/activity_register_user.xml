@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:theme="@style/Theme.MaterialComponents.DayNight.DarkActionBar"
+    android:layout_width="match_parent"
+    android:background="@color/colorActivityBackground"
+    android:layout_height="match_parent"
+    tools:context=".activities.LoginUserActivity">
+
+    <TextView
+        android:id="@+id/register_default"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/title_text_size"
+        android:textColor="@color/tableGreen"
+        android:text="@string/register_default_text"
+        android:fontFamily="sans-serif-condensed"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/username_wrapper"
+        style="@style/LoginTextInputLayoutStyle"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="@dimen/inputs_margin"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/register_default"
+        >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/input_username"
+            android:inputType="text"
+            android:imeOptions="actionGo"
+            android:textColorHint="@color/tableGreen"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-condensed"
+            android:textColor="@color/colorDialogs"
+            android:hint="@string/username_hint_text" />
+    </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/password_wrapper"
+        style="@style/LoginTextInputLayoutStyle"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="@dimen/inputs_margin"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/username_wrapper"
+        >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/input_password"
+            android:inputType="textPassword"
+            android:imeOptions="actionGo"
+            android:textColorHint="@color/tableGreen"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-condensed"
+            android:textColor="@color/colorDialogs"
+            android:hint="@string/password_hint_text" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <Button
+        android:id="@+id/button_register"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/password_wrapper"
+        android:layout_margin="@dimen/inputs_margin"
+        android:background="@drawable/register_button_background"
+        android:textSize="@dimen/button_text_size"
+        android:fontFamily="sans-serif-condensed"
+        android:text="@string/register_button_text"/>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

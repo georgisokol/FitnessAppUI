@@ -54,25 +54,27 @@
         android:id="@+id/defaultRow"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:weightSum="6"
         android:orientation="horizontal"
         android:padding="@dimen/table_row_padding"
         app:layout_constraintTop_toBottomOf="@id/line1">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.5"
+            android:layout_weight="1"
             android:fontFamily="sans-serif-condensed"
             android:text="@string/meal_history_table_date_default"
+            android:gravity="center"
             android:textColor="@color/colorYellowMain"
             android:textSize="@dimen/table_item_macros_size"
             android:textStyle="bold" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.5"
+            android:layout_weight="1"
+            android:gravity="center"
             android:fontFamily="sans-serif-condensed"
             android:text="@string/meal_history_table_calories_default"
             android:textColor="@color/colorYellowMain"
@@ -80,33 +82,49 @@
             android:textStyle="bold" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.5"
+            android:layout_weight="1"
             android:fontFamily="sans-serif-condensed"
             android:text="@string/meal_history_table_protein_default"
+            android:gravity="center"
             android:textColor="@color/colorYellowMain"
             android:textSize="@dimen/table_item_macros_size"
             android:textStyle="bold" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.5"
+            android:layout_weight="1"
             android:fontFamily="sans-serif-condensed"
             android:text="@string/meal_history_table_carbs_default"
+            android:gravity="center"
             android:textColor="@color/colorYellowMain"
             android:textSize="@dimen/table_item_macros_size"
             android:textStyle="bold" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
             android:fontFamily="sans-serif-condensed"
             android:text="@string/meal_history_table_fats_default"
             android:textColor="@color/colorYellowMain"
             android:textSize="@dimen/table_item_macros_size"
             android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-condensed"
+            android:text="Training"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:textColor="@color/colorYellowMain"
+            android:textSize="@dimen/table_item_macros_size"
+            android:textStyle="bold" />
+
 
     </LinearLayout>
 

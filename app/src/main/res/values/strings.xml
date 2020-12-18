@@ -87,5 +87,15 @@
     <string name="meal_history_table_carbs_default">Carbs</string>
     <string name="meal_history_table_fats_default">Fats</string>
 
+    //LOGIN AND REGISTER ACTIVITIES
+    <string name="sign_in_default_text">SIGN IN</string>
+    <string name="register_default_text">SIGN UP</string>
+
+    <string name="login_button_text">LOGIN</string>
+    <string name="register_button_text">REGISTER</string>
+
+    <string name="username_hint_text">username</string>
+    <string name="password_hint_text">password</string>
+
 
 </resources>

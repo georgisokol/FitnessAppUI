@@ -3,35 +3,39 @@ package com.example.fitnessapp.activities
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.activity.viewModels
+import androidx.lifecycle.Observer
 import com.example.fitnessapp.R
 import com.example.fitnessapp.dataclasses.DailyMacroTargetsData
-import com.example.fitnessapp.dataclasses.GetDailyMacroTargetsData
 import com.example.fitnessapp.dataclasses.UserDataForCreation
 import com.example.fitnessapp.dataclasses.UserDataForGet
-import com.example.fitnessapp.fragments.ExerciseFrequencyBottomSheetDialog
-import com.example.fitnessapp.fragments.ExerciseGoalBottomSheetDialog
-import com.example.fitnessapp.fragments.ExerciseTypeBottomSheetDialog
-import com.example.fitnessapp.fragments.GenderBottomSheetDialog
+import com.example.fitnessapp.fragments.*
+import com.example.fitnessapp.interfaces.ServerAndConnectivityInterface
+import com.example.fitnessapp.network.NoConnectivityException
 import com.example.fitnessapp.services.DailyMacroTargetsService
 import com.example.fitnessapp.services.ServiceBuilder
 import com.example.fitnessapp.utils.MyPreference
+import com.example.fitnessapp.viewmodels.MacrosViewModel
 import kotlinx.android.synthetic.main.activity_calculate_macros_first_page.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.net.SocketTimeoutException
 import kotlin.math.roundToInt
 
 class CalculateMacrosActivity : AppCompatActivity(),
     ExerciseFrequencyBottomSheetDialog.ExerciseFrequencyBottomSheetListener,
     GenderBottomSheetDialog.GenderBottomSheetListener,
     ExerciseTypeBottomSheetDialog.ExerciseTypeBottomSheetListener,
-    ExerciseGoalBottomSheetDialog.ExerciseGoalBottomSheetListener {
-    lateinit var myPreference: MyPreference
-     var dailyMacroTargetsUid: String? = null
-     var userUid: String? = null
+    ExerciseGoalBottomSheetDialog.ExerciseGoalBottomSheetListener , ServerAndConnectivityInterface{
+    lateinit var serverOrConnectivityInterface : ServerAndConnectivityInterface
+    private lateinit var myPreference: MyPreference
+    private var dailyMacroTargetsUid: String? = null
+    val macrosViewModel: MacrosViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_calculate_macros_first_page)
@@ -41,6 +45,9 @@ class CalculateMacrosActivity : AppCompatActivity(),
         supportActionBar?.setDisplayShowTitleEnabled(false)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_baseline_cancel_24)
 
+        serverOrConnectivityInterface  = this
+        macrosViewModel.serverOrConnectivityInterface = this
+
         myPreference = MyPreference(this)
 
         if (myPreference.getFirstTimeOpeningApp() != null) {
@@ -48,32 +55,45 @@ class CalculateMacrosActivity : AppCompatActivity(),
                 ServiceBuilder.buildService(DailyMacroTargetsService::class.java)
 
             // GET User
+            try {
+                val userRequestCall = dailyMacroTargetsService.getUser(myPreference.getUserUid()!!)
 
-            val userRequestCall = dailyMacroTargetsService.getUser()
+                userRequestCall.enqueue(object : Callback<UserDataForGet> {
+                    override fun onResponse(
+                        call: Call<UserDataForGet>,
+                        response: Response<UserDataForGet>
+                    ) {
+                        if (response.isSuccessful) {
+                            Toast.makeText(
+                                this@CalculateMacrosActivity,
+                                "USER DATA RETRIEVED",
+                                Toast.LENGTH_LONG
+                            )
+                                .show()
+                            val user = response.body()
+                            if (user?.gender != null) {
 
-            userRequestCall.enqueue(object :Callback<UserDataForGet>{
-                override fun onResponse(
-                    call: Call<UserDataForGet>,
-                    response: Response<UserDataForGet>
-                ) {
-                    if(response.isSuccessful){
-                        Toast.makeText(
-                            this@CalculateMacrosActivity,
-                            "USER DATA RETRIEVED",
-                            Toast.LENGTH_LONG
-                        )
-                            .show()
-                        val user = response.body()
-                        if(user != null ){
-                            userUid = user.Uid
-                            fillUserInformation(user)
+                                fillUserInformation(user)
+                            } else {
+                                Toast.makeText(
+                                    this@CalculateMacrosActivity,
+                                    "User Info already exists",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+
+
                         } else {
-                            userUid = null
+                            Toast.makeText(
+                                this@CalculateMacrosActivity,
+                                "USER DATA FAILED TO BE RETRIEVED",
+                                Toast.LENGTH_LONG
+                            )
+                                .show()
                         }
+                    }
 
-
-
-                    } else {
+                    override fun onFailure(call: Call<UserDataForGet>, t: Throwable) {
                         Toast.makeText(
                             this@CalculateMacrosActivity,
                             "USER DATA FAILED TO BE RETRIEVED",
@@ -81,54 +101,27 @@ class CalculateMacrosActivity : AppCompatActivity(),
                         )
                             .show()
                     }
-                }
 
-                override fun onFailure(call: Call<UserDataForGet>, t: Throwable) {
-                    Toast.makeText(
-                        this@CalculateMacrosActivity,
-                        "USER DATA FAILED TO BE RETRIEVED",
-                        Toast.LENGTH_LONG
-                    )
-                        .show()
-                }
+                })
+            } catch (e: NoConnectivityException) {
+                Log.e("Connectivity", e.message)
+                serverOrConnectivityInterface.onConnectivityError()
+            } catch( e: SocketTimeoutException) {
+                Log.e("Server status", "SERVER IS DOWN")
+                serverOrConnectivityInterface.onServerError()
+            }
 
-            })
+
 
             // GET Macros
-            val requestCallDailyMacroTargets = dailyMacroTargetsService.getActiveDailyMacroTargets()
-
-            requestCallDailyMacroTargets.enqueue(object : Callback<GetDailyMacroTargetsData> {
-                override fun onResponse(
-                    call: Call<GetDailyMacroTargetsData>,
-                    response: Response<GetDailyMacroTargetsData>
-                ) {
-                    if (response.isSuccessful) {
-                        Toast.makeText(
-                            this@CalculateMacrosActivity,
-                            "Gi ZEMAV PODATOCITE ZA MACROS - OT",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        val dailyMacroTargetsData = response.body()
-                        dailyMacroTargetsUid = if(dailyMacroTargetsData != null) {
-                            dailyMacroTargetsData.Uid
-                        } else {
-                            null
-                        }
-
-
-
-                    }
+            macrosViewModel.getDailyMacroTargets(myPreference.getUserUid()!!)
+            macrosViewModel.dailyMacroTargetsLive?.observe(this, Observer {
+                val dailyMacroTargetsData = it
+                dailyMacroTargetsUid = if (dailyMacroTargetsData != null) {
+                    dailyMacroTargetsData.Uid
+                } else {
+                    null
                 }
-
-                override fun onFailure(call: Call<GetDailyMacroTargetsData>, t: Throwable) {
-                    Toast.makeText(
-                        this@CalculateMacrosActivity,
-                        "FAIL ZA ZIMANJE PODATOCI ZA MACROS - OT",
-                        Toast.LENGTH_LONG
-                    )
-                        .show()
-                }
-
             })
 
 
@@ -159,6 +152,7 @@ class CalculateMacrosActivity : AppCompatActivity(),
         }
         letsGoContainer.setOnClickListener {
             addOrUpdateDailyMacroTargetsOrUsers()
+            finish()
 
 
         }
@@ -166,7 +160,7 @@ class CalculateMacrosActivity : AppCompatActivity(),
 
     }
 
-    private fun makeUserObjectForCreation() :UserDataForCreation {
+    private fun makeUserObjectForCreation(): UserDataForCreation {
         val age = edit_age.text.toString().toInt()
         val gender = when (text_gender.text.toString()) {
             resources.getString(R.string.male) -> 0
@@ -176,22 +170,22 @@ class CalculateMacrosActivity : AppCompatActivity(),
         val weight = edit_Weight.text.toString().toInt()
         val frequency = when (text_iExercise.text.toString()) {
             resources.getString(R.string.exercise_frequency_rarely) -> 0
-            resources.getString(R.string.exercise_frequency_1_3) ->1
-            resources.getString(R.string.exercise_frequency_3_5) ->2
+            resources.getString(R.string.exercise_frequency_1_3) -> 1
+            resources.getString(R.string.exercise_frequency_3_5) -> 2
             else -> 3
         }
-        val type = when(text_forExercise.text.toString()) {
+        val type = when (text_forExercise.text.toString()) {
             resources.getString(R.string.walk_sometimes) -> 0
             resources.getString(R.string.i_do_cardio) -> 1
             else -> 2
         }
-        val goal = when(text_iWantTo.text.toString()) {
+        val goal = when (text_iWantTo.text.toString()) {
             resources.getString(R.string.lose_some_fat) -> 0
             resources.getString(R.string.build_some_muscle) -> 1
             else -> 2
         }
 
-        return UserDataForCreation(age, gender, height, weight, frequency , type, goal)
+        return UserDataForCreation(age, gender, height, weight, frequency, type, goal)
 
     }
 
@@ -230,106 +224,34 @@ class CalculateMacrosActivity : AppCompatActivity(),
                 ServiceBuilder.buildService(DailyMacroTargetsService::class.java)
 
             // DAILY MACRO TARGETS POST
-            val dailyMacroTargetsRequestCall = dailyMacroTargetsService.addActiveDailyMacroTargets(
-                calculateTheMacros()
-            )
+            try {
+                val dailyMacroTargetsRequestCall = dailyMacroTargetsService.addActiveDailyMacroTargets(
+                    myPreference.getUserUid()!!,
+                    calculateTheMacros()
+                )
 
-            dailyMacroTargetsRequestCall.enqueue(object : Callback<DailyMacroTargetsData> {
-                override fun onFailure(
-                    call: Call<DailyMacroTargetsData>,
-                    t: Throwable
-                ) {
-                    Toast.makeText(
-                        this@CalculateMacrosActivity,
-                        "Failed to add item!!!!!!",
-                        Toast.LENGTH_LONG
-                    )
-                        .show()
-                }
-
-                override fun onResponse(
-                    call: Call<DailyMacroTargetsData>,
-                    response: Response<DailyMacroTargetsData>
-                ) {
-                    if (response.isSuccessful) {
-
-                        Toast.makeText(
-                            this@CalculateMacrosActivity,
-                            "Successfully Added",
-                            Toast.LENGTH_LONG
-                        ).show()
-
-                        myPreference.setFirstTimeOpeningApp("notFirst")
-                        val activityIntent =
-                            Intent(this@CalculateMacrosActivity, HomeActivity::class.java)
-                        startActivity(activityIntent)
-                    } else {
+                dailyMacroTargetsRequestCall.enqueue(object : Callback<DailyMacroTargetsData> {
+                    override fun onFailure(
+                        call: Call<DailyMacroTargetsData>,
+                        t: Throwable
+                    ) {
                         Toast.makeText(
                             this@CalculateMacrosActivity,
                             "Failed to add item!!!!!!",
                             Toast.LENGTH_LONG
-                        ).show()
-                    }
-                }
-            })
-
-
-            // USER POST
-
-            val userRequestCall = dailyMacroTargetsService.addUser(makeUserObjectForCreation())
-            userRequestCall.enqueue(object: Callback<UserDataForCreation>{
-                override fun onResponse(
-                    call: Call<UserDataForCreation>,
-                    response: Response<UserDataForCreation>
-                ) {
-                    if(response.isSuccessful) {
-                        Toast.makeText(
-                            this@CalculateMacrosActivity,
-                            "Successfully Added User",
-                            Toast.LENGTH_LONG
-                        ).show()
-                    } else {
-                        Toast.makeText(
-                            this@CalculateMacrosActivity,
-                            "Failed to add User",
-                            Toast.LENGTH_LONG
-                        ).show()
+                        )
+                            .show()
                     }
 
-                }
-
-                override fun onFailure(call: Call<UserDataForCreation>, t: Throwable) {
-                    Toast.makeText(
-                        this@CalculateMacrosActivity,
-                        "Failed to Add User",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-
-            })
-
-
-
-
-        } else {
-            val dailyMacroTargetsService =
-                ServiceBuilder.buildService(DailyMacroTargetsService::class.java)
-
-            // Daily Macro Targets Put
-
-
-            if(dailyMacroTargetsUid != null ) {
-                val dailyMacroTargetsRequestCall =
-                    dailyMacroTargetsService.updateActiveDailyMacroTargets(dailyMacroTargetsUid!!, calculateTheMacros())
-                dailyMacroTargetsRequestCall.enqueue(object : Callback<DailyMacroTargetsData> {
                     override fun onResponse(
                         call: Call<DailyMacroTargetsData>,
                         response: Response<DailyMacroTargetsData>
                     ) {
                         if (response.isSuccessful) {
+
                             Toast.makeText(
                                 this@CalculateMacrosActivity,
-                                "Successfully Updated DailyMacroTargets",
+                                "Successfully Added",
                                 Toast.LENGTH_LONG
                             ).show()
                             val activityIntent =
@@ -338,34 +260,26 @@ class CalculateMacrosActivity : AppCompatActivity(),
                         } else {
                             Toast.makeText(
                                 this@CalculateMacrosActivity,
-                                "UnSuccessfully Updated DailyMacroTargets",
+                                "Failed to add item!!!!!!",
                                 Toast.LENGTH_LONG
                             ).show()
                         }
                     }
-
-                    override fun onFailure(
-                        call: Call<DailyMacroTargetsData>,
-                        t: Throwable
-                    ) {
-                        Toast.makeText(
-                            this@CalculateMacrosActivity,
-                            "Failed to  Update",
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-
                 })
-            } else {
-                Toast.makeText(this@CalculateMacrosActivity, "Connect To Internet so u can change ur data", Toast.LENGTH_SHORT).show()
+            } catch (e: NoConnectivityException) {
+                Log.e("Connectivity", e.message)
+                serverOrConnectivityInterface.onConnectivityError()
+            } catch( e: SocketTimeoutException ) {
+                Log.e("Server status", "SERVER IS DOWN")
+                serverOrConnectivityInterface.onServerError()
             }
 
 
-            // User Put
-
-            if(userUid != null) {
-                val userRequestCall = dailyMacroTargetsService.updateUser(userUid!!, makeUserObjectForCreation())
-                userRequestCall.enqueue(object :Callback<UserDataForCreation>{
+            //User Put
+            try {
+                val userRequestCall =
+                    dailyMacroTargetsService.updateUser(myPreference.getUserUid()!!, makeUserObjectForCreation())
+                userRequestCall.enqueue(object : Callback<UserDataForCreation> {
                     override fun onResponse(
                         call: Call<UserDataForCreation>,
                         response: Response<UserDataForCreation>
@@ -397,9 +311,126 @@ class CalculateMacrosActivity : AppCompatActivity(),
                     }
 
                 })
-            } else {
-                Toast.makeText(this@CalculateMacrosActivity, "Connect To Internet so u can change ur data", Toast.LENGTH_SHORT).show()
+            }catch (e: NoConnectivityException) {
+                Log.e("Connectivity", e.message)
+                serverOrConnectivityInterface.onConnectivityError()
+            } catch( e: SocketTimeoutException ) {
+                Log.e("Server status", "SERVER IS DOWN")
+                serverOrConnectivityInterface.onServerError()
             }
+
+
+
+        } else {
+            val dailyMacroTargetsService =
+                ServiceBuilder.buildService(DailyMacroTargetsService::class.java)
+
+            // Daily Macro Targets Put
+
+            if (dailyMacroTargetsUid != null) {
+                try {
+                    val dailyMacroTargetsRequestCall =
+                        dailyMacroTargetsService.updateActiveDailyMacroTargets(
+                            myPreference.getUserUid()!!,
+                            dailyMacroTargetsUid!!,
+                            calculateTheMacros()
+                        )
+                    dailyMacroTargetsRequestCall.enqueue(object : Callback<DailyMacroTargetsData> {
+                        override fun onResponse(
+                            call: Call<DailyMacroTargetsData>,
+                            response: Response<DailyMacroTargetsData>
+                        ) {
+                            if (response.isSuccessful) {
+                                Toast.makeText(
+                                    this@CalculateMacrosActivity,
+                                    "Successfully Updated DailyMacroTargets",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                                val activityIntent =
+                                    Intent(this@CalculateMacrosActivity, HomeActivity::class.java)
+                                startActivity(activityIntent)
+                            } else {
+                                Toast.makeText(
+                                    this@CalculateMacrosActivity,
+                                    "UnSuccessfully Updated DailyMacroTargets",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+                        }
+
+                        override fun onFailure(
+                            call: Call<DailyMacroTargetsData>,
+                            t: Throwable
+                        ) {
+                            Toast.makeText(
+                                this@CalculateMacrosActivity,
+                                "Failed to  Update",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+
+                    })
+                } catch (e: NoConnectivityException) {
+                    Log.e("Connectivity", e.message)
+                    serverOrConnectivityInterface.onConnectivityError()
+                } catch( e: SocketTimeoutException ) {
+                    Log.e("Server status", "SERVER IS DOWN")
+                    serverOrConnectivityInterface.onServerError()
+                }
+
+            } else {
+                Toast.makeText(
+                    this@CalculateMacrosActivity,
+                    "Connect To Internet so u can change ur data",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
+
+            // User Put
+            try {
+                val userRequestCall =
+                    dailyMacroTargetsService.updateUser(myPreference.getUserUid()!!, makeUserObjectForCreation())
+                userRequestCall.enqueue(object : Callback<UserDataForCreation> {
+                    override fun onResponse(
+                        call: Call<UserDataForCreation>,
+                        response: Response<UserDataForCreation>
+                    ) {
+                        if (response.isSuccessful) {
+                            Toast.makeText(
+                                this@CalculateMacrosActivity,
+                                "Successfully Updated User",
+                                Toast.LENGTH_LONG
+                            ).show()
+                            val activityIntent =
+                                Intent(this@CalculateMacrosActivity, HomeActivity::class.java)
+                            startActivity(activityIntent)
+                        } else {
+                            Toast.makeText(
+                                this@CalculateMacrosActivity,
+                                "UnSuccessfully Updated User",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    }
+
+                    override fun onFailure(call: Call<UserDataForCreation>, t: Throwable) {
+                        Toast.makeText(
+                            this@CalculateMacrosActivity,
+                            "UnSuccessfully Updated User",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+
+                })
+            } catch (e: NoConnectivityException) {
+                Log.e("Connectivity", e.message)
+                serverOrConnectivityInterface.onConnectivityError()
+            } catch( e: SocketTimeoutException ) {
+                Log.e("Server status", "SERVER IS DOWN")
+                serverOrConnectivityInterface.onServerError()
+            }
+
 
 
         }
@@ -493,5 +524,31 @@ class CalculateMacrosActivity : AppCompatActivity(),
 
     override fun goalOptionClicked(goal: String) {
         text_iWantTo.text = goal
+    }
+
+    override fun onServerError() {
+        val errorMessage = "Could not connect to server"
+        val serverOrConnectivityErrorDialog = ServerOrConnectivityErrorDialog().newInstance(errorMessage)
+
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
+        val previous = supportFragmentManager.findFragmentByTag("connectionErrorDialog")
+        if (previous != null) {
+            fragmentTransaction.remove(previous)
+        }
+        fragmentTransaction.addToBackStack(null)
+        serverOrConnectivityErrorDialog.show(fragmentTransaction, "connectionErrorDialog")
+    }
+
+    override fun onConnectivityError() {
+        val errorMessage = "Check your internet connection"
+        val serverOrConnectivityErrorDialog = ServerOrConnectivityErrorDialog().newInstance(errorMessage)
+
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
+        val previous = supportFragmentManager.findFragmentByTag("connectionErrorDialog")
+        if (previous != null) {
+            fragmentTransaction.remove(previous)
+        }
+        fragmentTransaction.addToBackStack(null)
+        serverOrConnectivityErrorDialog.show(fragmentTransaction, "connectionErrorDialog")
     }
 }

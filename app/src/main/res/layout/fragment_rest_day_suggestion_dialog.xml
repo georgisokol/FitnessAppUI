@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <TextView
+        android:id="@+id/text_errorMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:gravity="center"
+        android:padding="@dimen/rest_or_training_day_dialog_textview_padding"
+        android:textSize="@dimen/rest_or_training_day_dialog_text_size"
+        android:text="You should rest today"
+        />
+
+    <View
+        android:id="@+id/line1"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:background="#cfcfcf" />
+
+
+    <TextView
+        android:id="@+id/text_setRestDay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/rest_or_training_day_dialog_text_size"
+        android:padding="@dimen/rest_or_training_day_dialog_textview_padding"
+        android:textColor="@color/colorActivityBackground"
+        android:text="Set Rest Day"/>
+    <View
+        android:id="@+id/line2"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:background="#cfcfcf" />
+    <TextView
+        android:id="@+id/text_setTrainingDay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/rest_or_training_day_dialog_text_size"
+        android:padding="@dimen/rest_or_training_day_dialog_textview_padding"
+        android:textColor="@color/colorActivityBackground"
+        android:text="Set Training Day Again"/>
+
+
+</LinearLayout>

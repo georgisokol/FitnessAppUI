@@ -14,5 +14,7 @@ data class GetDailyMacroTargetsData (
     @SerializedName("rProtein") var rProtein: Int ,
     @SerializedName("rCarbs") var rCarbs: Int ,
     @SerializedName("rFats") var rFats: Int ,
-    @SerializedName("customMacros") var customMacros: Boolean
+    @SerializedName("customMacros") var customMacros: Boolean,
+    @SerializedName("isFirstTime") var isFirstTime :String?,
+    @SerializedName("IsTrainingDay") var isTrainingDay: Boolean
 )
